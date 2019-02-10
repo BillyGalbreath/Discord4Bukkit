@@ -1,0 +1,6 @@
+name: Discord4Bukkit
+main: net.pl3x.bukkit.discord4bukkit.D4BPlugin
+version: "${project.version}"
+description: Discord Bot for Bukkit Servers
+author: BillyGalbreath
+api-version: 1.13

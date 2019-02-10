@@ -1,0 +1,3 @@
+command-no-permission: "&cYou do not have permission for that command!"
+discord-chat-format: "{displayname}: {message}"
+minecraft-chat-format: "<[D] {displayname}> {message}"
