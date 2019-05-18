@@ -1,5 +1,6 @@
 package net.pl3x.bukkit.discord4bukkit.configuration;
 
+import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -9,7 +10,8 @@ public class Config {
     public static String BOT_TOKEN;
     public static String CHANNEL;
 
-    public static void reload(Plugin plugin) {
+    public static void reload() {
+        Plugin plugin = D4BPlugin.getInstance();
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
         FileConfiguration config = plugin.getConfig();

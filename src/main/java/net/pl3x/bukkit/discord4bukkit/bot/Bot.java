@@ -5,6 +5,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
+import net.pl3x.bukkit.discord4bukkit.Logger;
 import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import net.pl3x.bukkit.discord4bukkit.listener.JDAListener;
@@ -39,6 +40,7 @@ public class Bot {
 
     public void disconnect() {
         if (client != null) {
+            plugin.getBot().sendMessageToDiscord(Lang.SERVER_OFFLINE, true);
             client.shutdownNow();
             client = null;
         }
@@ -46,37 +48,48 @@ public class Bot {
 
     public void setChannel(TextChannel channel) {
         if (channel == null) {
-            plugin.getLogger().debug("Disconnecting from discord channel");
+            Logger.debug("Disconnecting from discord channel");
         } else {
-            plugin.getLogger().debug("Registering channel: " + channel.getName() + " (" + channel.getId() + ")");
+            Logger.debug("Registering channel: " + channel.getName() + " (" + channel.getId() + ")");
         }
         this.channel = channel;
     }
 
     public void sendMessageToDiscord(String message) {
+        sendMessageToDiscord(message, false);
+    }
+
+    public void sendMessageToDiscord(String message, boolean blocking) {
         if (client == null) {
-            plugin.getLogger().error("Message delivery failed. Bot is not connected");
+            Logger.error("Message delivery failed. Bot is not connected");
             return;
         }
 
         if (channel == null) {
-            plugin.getLogger().debug("Message delivery failed. Channel not registered");
+            Logger.debug("Message delivery failed. Channel not registered");
             return;
         }
 
         if (message == null) {
-            plugin.getLogger().debug("Message delivery failed. No message to send");
+            Logger.debug("Message delivery failed. No message to send");
             return;
         }
 
         message = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', message));
 
-        if (message == null) {
-            plugin.getLogger().debug("Message delivery failed. Message is empty");
+        if (message.isEmpty()) {
+            Logger.debug("Message delivery failed. Message is empty");
             return;
         }
 
-        channel.sendMessage(message).queue();
+        if (blocking) {
+            try {
+                channel.sendMessage(message).complete(false);
+            } catch (Exception ignore) {
+            }
+        } else {
+            channel.sendMessage(message).queue();
+        }
     }
 
     public void sendMessageToMinecraft(String message) {

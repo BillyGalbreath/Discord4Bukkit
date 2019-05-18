@@ -5,7 +5,6 @@ import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import net.pl3x.bukkit.discord4bukkit.listener.BukkitListener;
 import net.pl3x.bukkit.discord4bukkit.util.JarLoader;
-import net.pl3x.bukkit.discord4bukkit.util.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -17,25 +16,25 @@ public class D4BPlugin extends JavaPlugin {
     private static final String JDAUrl = "https://github.com/DV8FromTheWorld/JDA/releases/download/v" + JDAVersion + "/JDA-" + JDAVersion + "_" + JDABuild + "-withDependencies.jar";
     private static final String JDAFile = "jda-" + JDAVersion + "_" + JDABuild + ".jar";
 
-    private final Logger logger;
+    private static D4BPlugin instance;
 
     private final Bot bot;
 
     public D4BPlugin() {
         super();
-        logger = new Logger(this);
+        instance = this;
         bot = new Bot(this);
     }
 
     @Override
     public void onLoad() {
-        Config.reload(this);
-        Lang.reload(this);
+        Config.reload();
+        Lang.reload();
 
-        if (new JarLoader(this).loadJar(JDAUrl, new File(new File(getDataFolder(), "libs"), JDAFile))) {
-            getLogger().info("JDA successfully loaded");
+        if (new JarLoader().loadJar(JDAUrl, new File(new File(getDataFolder(), "libs"), JDAFile))) {
+            Logger.info("JDA successfully loaded");
         } else {
-            getLogger().error("JDA could not be loaded!");
+            Logger.error("JDA could not be loaded!");
         }
     }
 
@@ -51,12 +50,11 @@ public class D4BPlugin extends JavaPlugin {
         bot.disconnect();
     }
 
-    @Override
-    public Logger getLogger() {
-        return logger;
-    }
-
     public Bot getBot() {
         return bot;
+    }
+
+    public static D4BPlugin getInstance() {
+        return instance;
     }
 }

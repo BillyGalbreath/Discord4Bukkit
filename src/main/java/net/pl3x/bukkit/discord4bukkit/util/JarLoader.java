@@ -1,6 +1,7 @@
 package net.pl3x.bukkit.discord4bukkit.util;
 
 import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
+import net.pl3x.bukkit.discord4bukkit.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -28,21 +29,17 @@ public class JarLoader {
         }
     }
 
-    private final D4BPlugin plugin;
-
     private URLClassLoader classLoader;
 
-    public JarLoader(D4BPlugin plugin) {
-        this.plugin = plugin;
-
-        classLoader = ((URLClassLoader) plugin.getClass().getClassLoader());
+    public JarLoader() {
+        classLoader = ((URLClassLoader) D4BPlugin.getInstance().getClass().getClassLoader());
     }
 
     public boolean loadJar(String url, File file) {
         try {
             if (!file.getParentFile().exists()) {
                 if (!file.getParentFile().mkdirs()) {
-                    plugin.getLogger().warning("Could not create directory: " + file.getParentFile().getAbsolutePath());
+                    Logger.warn("Could not create directory: " + file.getParentFile().getAbsolutePath());
                 }
             }
 
@@ -51,8 +48,8 @@ public class JarLoader {
             }
 
             if (!file.exists()) {
-                plugin.getLogger().info("Jar not found! (" + file.getName() + ")");
-                plugin.getLogger().info("Downloading jar from " + url);
+                Logger.info("Jar not found! (" + file.getName() + ")");
+                Logger.info("Downloading jar from " + url);
                 downloadJar(url, file);
             }
 
@@ -113,6 +110,7 @@ public class JarLoader {
         @Override
         public void run() {
             try {
+                //noinspection InfiniteLoopStatement
                 while (true) {
                     logProgress();
                     sleep(1000);
@@ -128,10 +126,9 @@ public class JarLoader {
         }
 
         private void logProgress() {
-            plugin.getLogger().info(
-                    String.format("     progress: %s%% (%s/%s)",
-                            (int) ((((double) current) / ((double) total)) * 100D),
-                            current, total));
+            Logger.info(String.format("     progress: %s%% (%s/%s)",
+                    (int) ((((double) current) / ((double) total)) * 100D),
+                    current, total));
         }
     }
 }

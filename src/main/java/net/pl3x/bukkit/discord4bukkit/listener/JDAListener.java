@@ -10,6 +10,7 @@ import net.dv8tion.jda.core.events.ShutdownEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
+import net.pl3x.bukkit.discord4bukkit.Logger;
 import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 
@@ -22,33 +23,38 @@ public class JDAListener extends ListenerAdapter {
 
     @Override
     public void onReady(ReadyEvent event) {
-        plugin.getLogger().debug("Discord: Connected");
+        Logger.debug("Discord: Connected");
 
         TextChannel channel = event.getJDA().getTextChannelById(Config.CHANNEL);
         if (channel != null) {
             plugin.getBot().setChannel(channel);
+            plugin.getBot().sendMessageToDiscord(Lang.SERVER_ONLINE);
         } else {
-            plugin.getLogger().error("Could not register channel!");
+            Logger.error("Could not register channel!");
         }
     }
 
+    @Override
     public void onResume(ResumedEvent event) {
-        plugin.getLogger().debug("Discord: Resumed connection");
+        Logger.debug("Discord: Resumed connection");
         setChannel(event.getJDA());
     }
 
+    @Override
     public void onReconnect(ReconnectedEvent event) {
-        plugin.getLogger().debug("Discord: Re-connected");
+        Logger.debug("Discord: Re-connected");
         setChannel(event.getJDA());
     }
 
+    @Override
     public void onDisconnect(DisconnectEvent event) {
-        plugin.getLogger().debug("Discord: Disconnected");
+        Logger.debug("Discord: Disconnected");
         setChannel(null);
     }
 
+    @Override
     public void onShutdown(ShutdownEvent event) {
-        plugin.getLogger().debug("Discord: Shutting down");
+        Logger.debug("Discord: Shutting down");
         setChannel(null);
     }
 
@@ -57,6 +63,7 @@ public class JDAListener extends ListenerAdapter {
         plugin.getBot().setChannel(channel);
     }
 
+    @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getAuthor() == event.getJDA().getSelfUser()) {
             return; // dont echo
