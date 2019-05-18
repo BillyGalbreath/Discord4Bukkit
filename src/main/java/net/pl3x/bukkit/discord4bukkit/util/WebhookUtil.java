@@ -1,10 +1,14 @@
 package net.pl3x.bukkit.discord4bukkit.util;
 
 
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Webhook;
 import net.dv8tion.jda.webhook.WebhookClient;
 import net.dv8tion.jda.webhook.WebhookMessageBuilder;
+import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -35,19 +39,37 @@ public class WebhookUtil {
 
         List<String> split = Arrays.asList(message.split(" "));
         for (String word : split) {
-            if (word.equalsIgnoreCase(webhook.getGuild().getSelfMember().getEffectiveName())) {
-                split.set(split.indexOf(word), webhook.getGuild().getOwner().getAsMention());
+            if (!word.startsWith("@")) {
+                continue; // must explicitly tag to mention
             }
+            webhook.getGuild().getMembers().forEach(member -> {
+                if (member == webhook.getGuild().getSelfMember()) {
+                    return; // don't tag self
+                }
+                String name = word.substring(1);
+                if (name.equalsIgnoreCase(member.getEffectiveName()) ||
+                        name.equalsIgnoreCase(member.getUser().getName())) {
+                    split.set(split.indexOf(word), member.getAsMention());
+                }
+            });
         }
         message = String.join(" ", split);
 
-        WebhookMessageBuilder builder = new WebhookMessageBuilder();
-        builder.setContent(message);
-        builder.setUsername(username);
-        builder.setAvatarUrl(avatar);
+        JDA jda = D4BPlugin.getInstance().getBot().getClient();
+
+        MessageBuilder msgBuilder = new MessageBuilder();
+        msgBuilder.setContent(message);
+        msgBuilder.stripMentions(jda, Message.MentionType.EVERYONE); // big no-no
+        msgBuilder.stripMentions(jda, Message.MentionType.HERE); // just as bad
+        msgBuilder.stripMentions(jda, Message.MentionType.ROLE); // annoying :S
+
+        WebhookMessageBuilder webhookBuilder = new WebhookMessageBuilder();
+        webhookBuilder.setContent(msgBuilder.build().getContentRaw());
+        webhookBuilder.setUsername(username);
+        webhookBuilder.setAvatarUrl(avatar);
 
         WebhookClient client = webhook.newClient().build();
-        client.send(builder.build());
+        client.send(webhookBuilder.build());
         client.close();
     }
 }
