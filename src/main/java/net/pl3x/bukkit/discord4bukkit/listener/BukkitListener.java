@@ -1,7 +1,6 @@
 package net.pl3x.bukkit.discord4bukkit.listener;
 
 import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
-import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -19,24 +18,21 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        plugin.getBot().sendMessageToDiscord("*" + event.getJoinMessage() + "*");
+        plugin.getBot().sendMessageToDiscord(":heavy_plus_sign: **" + event.getJoinMessage() + "**");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        plugin.getBot().sendMessageToDiscord("*" + event.getQuitMessage() + "*");
+        plugin.getBot().sendMessageToDiscord(":heavy_minus_sign: **" + event.getQuitMessage() + "**");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event) {
-        plugin.getBot().sendMessageToDiscord("*" + event.getDeathMessage() + "*");
+        plugin.getBot().sendMessageToDiscord(":skull: **" + event.getDeathMessage() + "**");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        plugin.getBot().sendMessageToDiscord(Lang.DISCORD_CHAT_FORMAT
-                .replace("{player}", event.getPlayer().getName())
-                .replace("{displayname}", event.getPlayer().getDisplayName())
-                .replace("{message}", event.getMessage()));
+        plugin.getBot().sendMessageToDiscord(event.getPlayer(), event.getMessage());
     }
 }

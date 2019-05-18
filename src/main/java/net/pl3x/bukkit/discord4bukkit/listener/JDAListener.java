@@ -25,6 +25,12 @@ public class JDAListener extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         Logger.debug("Discord: Connected");
 
+        plugin.getBot().getClient().getGuilds().forEach(guild -> {
+            guild.getWebhooks().complete().stream()
+                    .filter(webhook -> webhook.getName().startsWith("#d4b_"))
+                    .forEach(webhook -> webhook.delete().reason("Purge").complete());
+        });
+
         TextChannel channel = event.getJDA().getTextChannelById(Config.CHANNEL);
         if (channel != null) {
             plugin.getBot().setChannel(channel);
@@ -73,7 +79,7 @@ public class JDAListener extends ListenerAdapter {
         }
         if (event.getMessage().getChannel().getId().equals(Config.CHANNEL)) {
             plugin.getBot().sendMessageToMinecraft(Lang.MINECRAFT_CHAT_FORMAT
-                    .replace("{displayname}", event.getAuthor().getName())
+                    .replace("{displayname}", event.getMember().getEffectiveName())
                     .replace("{message}", event.getMessage().getContentDisplay()));
         }
     }

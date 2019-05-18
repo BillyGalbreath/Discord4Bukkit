@@ -1,5 +1,4 @@
 command-no-permission: "&cYou do not have permission for that command!"
-discord-chat-format: "{displayname}: {message}"
 minecraft-chat-format: "<&7[&bD&7]&r {displayname}> {message}"
 server-online: "<a:online:579218931495993354> **Server is online!**"
 server-offline: "<a:offline:579218899493715971> **Server is offline!**"

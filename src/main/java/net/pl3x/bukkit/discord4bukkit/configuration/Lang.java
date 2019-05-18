@@ -12,7 +12,6 @@ import java.io.File;
 
 public class Lang {
     public static String COMMAND_NO_PERMISSION;
-    public static String DISCORD_CHAT_FORMAT;
     public static String MINECRAFT_CHAT_FORMAT;
     public static String SERVER_ONLINE;
     public static String SERVER_OFFLINE;
@@ -27,7 +26,6 @@ public class Lang {
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
         COMMAND_NO_PERMISSION = config.getString("command-no-permission", "&cYou do not have permission for that command!");
-        DISCORD_CHAT_FORMAT = config.getString("discord-chat-format", "{displayname}: {message}");
         MINECRAFT_CHAT_FORMAT = config.getString("minecraft-chat-format", "<&7[&bD&7]&r {displayname}> {message}");
         SERVER_ONLINE = config.getString("server-online", ":<a:online:579218931495993354> **Server is online!**");
         SERVER_OFFLINE = config.getString("server-offline", "<a:offline:579218899493715971> **Server is offline!**");

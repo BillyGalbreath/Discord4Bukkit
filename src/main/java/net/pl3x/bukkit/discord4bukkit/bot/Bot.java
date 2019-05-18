@@ -9,7 +9,9 @@ import net.pl3x.bukkit.discord4bukkit.Logger;
 import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import net.pl3x.bukkit.discord4bukkit.listener.JDAListener;
+import net.pl3x.bukkit.discord4bukkit.util.WebhookUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import javax.security.auth.login.LoginException;
 
@@ -21,6 +23,10 @@ public class Bot {
 
     public Bot(D4BPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    public JDA getClient() {
+        return client;
     }
 
     public void connect() {
@@ -51,6 +57,7 @@ public class Bot {
             Logger.debug("Disconnecting from discord channel");
         } else {
             Logger.debug("Registering channel: " + channel.getName() + " (" + channel.getId() + ")");
+            WebhookUtil.setup(channel);
         }
         this.channel = channel;
     }
@@ -90,6 +97,10 @@ public class Bot {
         } else {
             channel.sendMessage(message).queue();
         }
+    }
+
+    public void sendMessageToDiscord(Player player, String message) {
+        WebhookUtil.sendMessageToDiscord(player, message);
     }
 
     public void sendMessageToMinecraft(String message) {
