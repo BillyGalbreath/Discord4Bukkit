@@ -24,13 +24,6 @@ public class JDAListener extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent event) {
         Logger.debug("Discord: Connected");
-
-        plugin.getBot().getClient().getGuilds().forEach(guild -> {
-            guild.getWebhooks().complete().stream()
-                    .filter(webhook -> webhook.getName().startsWith("#d4b_"))
-                    .forEach(webhook -> webhook.delete().reason("Purge").complete());
-        });
-
         TextChannel channel = event.getJDA().getTextChannelById(Config.CHANNEL);
         if (channel != null) {
             plugin.getBot().setChannel(channel);
