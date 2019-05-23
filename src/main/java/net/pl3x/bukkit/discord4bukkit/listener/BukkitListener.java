@@ -8,6 +8,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class BukkitListener implements Listener {
     private final D4BPlugin plugin;
@@ -33,6 +34,14 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        plugin.getBot().sendMessageToDiscord(event.getPlayer(), event.getMessage());
+        if (!event.isAsynchronous()) {
+            new BukkitRunnable() {
+                public void run() {
+                    plugin.getBot().sendMessageToDiscord(event.getPlayer(), event.getMessage());
+                }
+            }.runTaskAsynchronously(plugin);
+        } else {
+            plugin.getBot().sendMessageToDiscord(event.getPlayer(), event.getMessage());
+        }
     }
 }

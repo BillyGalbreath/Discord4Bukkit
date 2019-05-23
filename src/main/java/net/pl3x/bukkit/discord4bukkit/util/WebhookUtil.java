@@ -5,6 +5,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Webhook;
 import net.dv8tion.jda.webhook.WebhookClient;
 import net.dv8tion.jda.webhook.WebhookMessageBuilder;
@@ -33,13 +34,14 @@ public class WebhookUtil {
         }
         lastUsername = username;
 
-        Webhook webhook = bot.getClient().getWebhookById(webhooks[currentWebhook]).complete();
+        String hookName = webhooks[currentWebhook];
+        TextChannel channel = bot.getClient().getTextChannelById(Config.CHANNEL);
+        Webhook webhook = channel.getWebhooks().complete().stream()
+                .filter(hook -> hook.getName().equals(hookName))
+                .findFirst().orElse(channel.createWebhook(hookName).complete());
         if (webhook == null) {
-            webhook = bot.getClient().getTextChannelById(Config.CHANNEL).createWebhook(webhooks[currentWebhook]).complete();
-            if (webhook == null) {
-                Logger.warn("Could not send message to discord. Webhook not found!");
-                return;
-            }
+            Logger.warn("Could not send message to discord. Webhook not found!");
+            return;
         }
 
         message = ChatColor.stripColor(message);
