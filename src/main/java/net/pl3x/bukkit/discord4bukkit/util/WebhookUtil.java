@@ -38,10 +38,14 @@ public class WebhookUtil {
         TextChannel channel = bot.getClient().getTextChannelById(Config.CHANNEL);
         Webhook webhook = channel.getWebhooks().complete().stream()
                 .filter(hook -> hook.getName().equals(hookName))
-                .findFirst().orElse(channel.createWebhook(hookName).complete());
+                .findFirst().orElse(null);
         if (webhook == null) {
-            Logger.warn("Could not send message to discord. Webhook not found!");
-            return;
+            Logger.info("Could not find webhook! Creating a new one. (" + hookName + ")");
+            webhook = channel.createWebhook(hookName).complete();
+            if (webhook == null) {
+                Logger.warn("Could not send message to discord. Webhook not found!");
+                return;
+            }
         }
 
         message = ChatColor.stripColor(message);
