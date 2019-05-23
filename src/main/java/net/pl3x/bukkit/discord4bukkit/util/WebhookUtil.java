@@ -3,13 +3,14 @@ package net.pl3x.bukkit.discord4bukkit.util;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.Webhook;
 import net.dv8tion.jda.webhook.WebhookClient;
 import net.dv8tion.jda.webhook.WebhookMessageBuilder;
 import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
 import net.pl3x.bukkit.discord4bukkit.Logger;
+import net.pl3x.bukkit.discord4bukkit.bot.Bot;
 import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -18,39 +19,28 @@ import java.util.Arrays;
 import java.util.List;
 
 public class WebhookUtil {
-    private static Webhook[] webhooks = new Webhook[2];
+    private static String[] webhooks = new String[]{"#d4b_1", "#d4b_2"};
     private static int currentWebhook = 0;
     private static String lastUsername;
 
-    public static void setup(TextChannel channel) {
-        webhooks[0] = channel.getJDA().getWebhookById("#d4b_1").complete();
-        if (webhooks[0] == null) {
-            webhooks[0] = channel.createWebhook("#db4_1").complete();
-        }
-
-        webhooks[1] = channel.getJDA().getWebhookById("#d4b_2").complete();
-        if (webhooks[1] == null) {
-            webhooks[1] = channel.createWebhook("#d4b_2").complete();
-        }
+    public static void sendMessageToDiscord(Bot bot, Player player, String message) {
+        sendMessageToDiscord(bot, "https://minotar.net/helm/" + player.getName() + "/100.png", player.getDisplayName(), message);
     }
 
-    public static void sendMessageToDiscord(Player player, String message) {
-        sendMessageToDiscord("https://minotar.net/helm/" + player.getName() + "/100.png", player.getDisplayName(), message);
-    }
-
-    public static void sendMessageToDiscord(String avatar, String username, String message) {
+    public static void sendMessageToDiscord(Bot bot, String avatar, String username, String message) {
         if (username == null || !username.equals(lastUsername)) {
             currentWebhook = currentWebhook == 0 ? 1 : 0;
         }
         lastUsername = username;
-        if (webhooks[currentWebhook] == null) {
-            setup(D4BPlugin.getInstance().getBot().getClient().getTextChannelById(Config.CHANNEL));
-            if (webhooks[currentWebhook] == null) {
+
+        Webhook webhook = bot.getClient().getWebhookById(webhooks[currentWebhook]).complete();
+        if (webhook == null) {
+            webhook = bot.getClient().getTextChannelById(Config.CHANNEL).createWebhook(webhooks[currentWebhook]).complete();
+            if (webhook == null) {
                 Logger.warn("Could not send message to discord. Webhook not found!");
                 return;
             }
         }
-        Webhook webhook = webhooks[currentWebhook];
 
         message = ChatColor.stripColor(message);
 
@@ -59,8 +49,9 @@ public class WebhookUtil {
             if (!word.startsWith("@")) {
                 continue; // must explicitly tag to mention
             }
-            webhook.getGuild().getMembers().forEach(member -> {
-                if (member == webhook.getGuild().getSelfMember()) {
+            Guild guild = webhook.getGuild();
+            guild.getMembers().forEach(member -> {
+                if (member == guild.getSelfMember()) {
                     return; // don't tag self
                 }
                 String name = word.substring(1);

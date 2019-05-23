@@ -57,7 +57,6 @@ public class Bot {
             Logger.debug("Disconnecting from discord channel");
         } else {
             Logger.debug("Registering channel: " + channel.getName() + " (" + channel.getId() + ")");
-            WebhookUtil.setup(channel);
         }
         this.channel = channel;
     }
@@ -100,7 +99,7 @@ public class Bot {
     }
 
     public void sendMessageToDiscord(Player player, String message) {
-        WebhookUtil.sendMessageToDiscord(player, message);
+        WebhookUtil.sendMessageToDiscord(this, player, message);
     }
 
     public void sendMessageToMinecraft(String message) {
