@@ -4,3 +4,16 @@ version: "${project.version}"
 description: "Discord Bot for Bukkit Servers"
 author: "BillyGalbreath"
 api-version: "1.13"
+
+commands:
+  discord4bukkit:
+    description: Controls the discord bot
+    usage: /<command> (reload)
+    aliases:
+      - discord
+      - d4b
+
+permissions:
+  command.discord4bukkit:
+    description: Allows controlling the bot
+    default: op

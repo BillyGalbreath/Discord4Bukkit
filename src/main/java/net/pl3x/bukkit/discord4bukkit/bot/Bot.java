@@ -10,10 +10,14 @@ import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import net.pl3x.bukkit.discord4bukkit.listener.JDAListener;
 import net.pl3x.bukkit.discord4bukkit.util.WebhookUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import javax.security.auth.login.LoginException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class Bot {
     private final D4BPlugin plugin;
@@ -104,5 +108,19 @@ public class Bot {
 
     public void sendMessageToMinecraft(String message) {
         Lang.broadcast(message);
+    }
+
+    public void handleCommand(String name, String content) {
+        String[] split = content.split(" ");
+        String command = split[0].substring(1).toLowerCase();
+        String[] args = Arrays.copyOfRange(split, 1, split.length);
+
+        // TODO this is just a quick and stupid impl to get going
+        if (command.equals("list") || command.equals("playerlist")) {
+            sendMessageToDiscord("**Players Online:**");
+            sendMessageToDiscord(Bukkit.getOnlinePlayers().stream()
+                    .map(HumanEntity::getName)
+                    .collect(Collectors.joining(", ")));
+        }
     }
 }

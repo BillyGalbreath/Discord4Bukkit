@@ -1,6 +1,7 @@
 package net.pl3x.bukkit.discord4bukkit;
 
 import net.pl3x.bukkit.discord4bukkit.bot.Bot;
+import net.pl3x.bukkit.discord4bukkit.command.bukkit.CmdDiscord4Bukkit;
 import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import net.pl3x.bukkit.discord4bukkit.listener.BukkitListener;
@@ -41,6 +42,8 @@ public class D4BPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
+
+        getCommand("discord4bukkit").setExecutor(new CmdDiscord4Bukkit());
 
         bot.connect();
     }

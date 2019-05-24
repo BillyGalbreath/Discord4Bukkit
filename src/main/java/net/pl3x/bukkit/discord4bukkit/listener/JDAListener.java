@@ -71,9 +71,14 @@ public class JDAListener extends ListenerAdapter {
             return; // do not listen to webhooks
         }
         if (event.getMessage().getChannel().getId().equals(Config.CHANNEL)) {
-            plugin.getBot().sendMessageToMinecraft(Lang.MINECRAFT_CHAT_FORMAT
-                    .replace("{displayname}", event.getMember().getEffectiveName())
-                    .replace("{message}", event.getMessage().getContentDisplay()));
+            String content = event.getMessage().getContentRaw();
+            if (content.startsWith("!") && content.length() > 1) {
+                plugin.getBot().handleCommand(event.getAuthor().getName(), content);
+            } else {
+                plugin.getBot().sendMessageToMinecraft(Lang.MINECRAFT_CHAT_FORMAT
+                        .replace("{displayname}", event.getMember().getEffectiveName())
+                        .replace("{message}", event.getMessage().getContentDisplay()));
+            }
         }
     }
 }
