@@ -14,6 +14,8 @@ import net.pl3x.bukkit.discord4bukkit.Logger;
 import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 
+import java.util.Arrays;
+
 public class JDAListener extends ListenerAdapter {
     private final D4BPlugin plugin;
 
@@ -73,7 +75,10 @@ public class JDAListener extends ListenerAdapter {
         if (event.getMessage().getChannel().getId().equals(Config.CHANNEL)) {
             String content = event.getMessage().getContentRaw();
             if (content.startsWith("!") && content.length() > 1) {
-                plugin.getBot().handleCommand(event.getAuthor().getName(), content);
+                String[] split = content.split(" ");
+                String command = split[0].substring(1).toLowerCase();
+                String[] args = Arrays.copyOfRange(split, 1, split.length);
+                plugin.getBot().handleCommand(event.getAuthor().getName(), command, args);
             } else {
                 plugin.getBot().sendMessageToMinecraft(Lang.MINECRAFT_CHAT_FORMAT
                         .replace("{displayname}", event.getMember().getEffectiveName())

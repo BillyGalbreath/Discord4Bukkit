@@ -16,7 +16,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import javax.security.auth.login.LoginException;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class Bot {
@@ -110,17 +110,16 @@ public class Bot {
         Lang.broadcast(message);
     }
 
-    public void handleCommand(String name, String content) {
-        String[] split = content.split(" ");
-        String command = split[0].substring(1).toLowerCase();
-        String[] args = Arrays.copyOfRange(split, 1, split.length);
-
+    public void handleCommand(String sender, String command, String[] args) {
         // TODO this is just a quick and stupid impl to get going
         if (command.equals("list") || command.equals("playerlist")) {
-            sendMessageToDiscord("**Players Online:**");
-            sendMessageToDiscord(Bukkit.getOnlinePlayers().stream()
-                    .map(HumanEntity::getName)
-                    .collect(Collectors.joining(", ")));
+            Collection<? extends Player> online = Bukkit.getOnlinePlayers();
+            sendMessageToDiscord(String.format("**Players Online:** (%s out of %s) \n%s",
+                    online.size(),
+                    Bukkit.getMaxPlayers(),
+                    online.stream()
+                            .map(HumanEntity::getName)
+                            .collect(Collectors.joining(", "))));
         }
     }
 }
