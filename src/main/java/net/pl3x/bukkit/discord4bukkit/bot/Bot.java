@@ -120,6 +120,14 @@ public class Bot {
                     online.stream()
                             .map(HumanEntity::getName)
                             .collect(Collectors.joining(", "))));
+            return;
+        }
+        if (command.equals("tps")) {
+            double[] tps = Bukkit.getTPS();
+            sendMessageToDiscord("TPS from last 1m, 5m, 15m: "
+                    + String.format("%2f", tps[0]) + " "
+                    + String.format("%2f", tps[1]) + " "
+                    + String.format("%2f", tps[2]));
         }
     }
 }

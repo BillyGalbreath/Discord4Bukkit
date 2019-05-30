@@ -13,8 +13,8 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
+            <groupId>net.pl3x.purpur</groupId>
+            <artifactId>purpur</artifactId>
             <version>1.14.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -27,8 +27,8 @@
     </dependencies>
     <repositories>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+            <id>purpur-repo</id>
+            <url>https://repo.pl3x.net/</url>
         </repository>
         <repository>
             <id>jda-repo</id>
