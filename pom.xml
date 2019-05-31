@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.pl3x.bukkit.discord4bukkit</groupId>
     <artifactId>Discord4Bukkit</artifactId>
-    <version>0.1</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,14 +14,14 @@
     <dependencies>
         <dependency>
             <groupId>net.pl3x.purpur</groupId>
-            <artifactId>purpur</artifactId>
-            <version>1.14.1-R0.1-SNAPSHOT</version>
+            <artifactId>purpur-api</artifactId>
+            <version>1.14.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.8.2_459</version>
+            <version>3.8.3_463</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
