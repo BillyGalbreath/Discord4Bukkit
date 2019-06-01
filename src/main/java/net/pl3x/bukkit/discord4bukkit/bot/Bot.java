@@ -23,7 +23,8 @@ public class Bot {
     private final D4BPlugin plugin;
 
     private JDA client = null;
-    private TextChannel channel;
+    private TextChannel chatChannel;
+    private TextChannel consoleChannel;
 
     public Bot(D4BPlugin plugin) {
         this.plugin = plugin;
@@ -51,18 +52,44 @@ public class Bot {
     public void disconnect() {
         if (client != null) {
             plugin.getBot().sendMessageToDiscord(Lang.SERVER_OFFLINE, true);
-            client.shutdownNow();
+            chatChannel = null;
+            consoleChannel = null;
+            JDA jda = client;
             client = null;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ignore) {
+                }
+                jda.shutdownNow();
+            }).start();
         }
     }
 
-    public void setChannel(TextChannel channel) {
-        if (channel == null) {
-            Logger.debug("Disconnecting from discord channel");
+    public void setChatChannel(TextChannel chatChannel) {
+        if (chatChannel == null) {
+            Logger.debug("Disconnecting from discord chat channel");
         } else {
-            Logger.debug("Registering channel: " + channel.getName() + " (" + channel.getId() + ")");
+            Logger.debug("Registering chat channel: " + chatChannel.getName() + " (" + chatChannel.getId() + ")");
         }
-        this.channel = channel;
+        this.chatChannel = chatChannel;
+    }
+
+    public void setConsoleChannel(TextChannel consoleChannel) {
+        if (consoleChannel == null) {
+            Logger.debug("Disconnecting from discord console channel");
+        } else {
+            Logger.debug("Registering console channel: " + consoleChannel.getName() + " (" + consoleChannel.getId() + ")");
+        }
+        this.consoleChannel = consoleChannel;
+    }
+
+    public TextChannel getConsoleChannel() {
+        return consoleChannel;
+    }
+
+    public void sendMessageToConsole(String message) {
+        sendMessageToDiscord(consoleChannel, message, false);
     }
 
     public void sendMessageToDiscord(String message) {
@@ -70,35 +97,39 @@ public class Bot {
     }
 
     public void sendMessageToDiscord(String message, boolean blocking) {
+        sendMessageToDiscord(chatChannel, message, blocking);
+    }
+
+    private void sendMessageToDiscord(TextChannel channel, String message, boolean blocking) {
         if (client == null) {
-            Logger.error("Message delivery failed. Bot is not connected");
             return;
         }
 
         if (channel == null) {
-            Logger.debug("Message delivery failed. Channel not registered");
             return;
         }
 
         if (message == null) {
-            Logger.debug("Message delivery failed. No message to send");
             return;
         }
 
         message = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', message));
 
         if (message.isEmpty()) {
-            Logger.debug("Message delivery failed. Message is empty");
             return;
         }
 
-        if (blocking) {
-            try {
-                channel.sendMessage(message).complete(false);
-            } catch (Exception ignore) {
+        try {
+            if (blocking) {
+                try {
+                    channel.sendMessage(message).complete(false);
+                } catch (Exception ignore) {
+                }
+            } else {
+                channel.sendMessage(message).queue();
             }
-        } else {
-            channel.sendMessage(message).queue();
+        } catch (Exception e) {
+            System.out.println("caught some exception");
         }
     }
 

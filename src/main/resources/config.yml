@@ -4,4 +4,6 @@ language-file: lang-en.yml
 
 bot-token: "put your bot token here"
 
-channel: "000000000000000000"
+channel:
+  chat: "000000000000000000"
+  console: "000000000000000000"

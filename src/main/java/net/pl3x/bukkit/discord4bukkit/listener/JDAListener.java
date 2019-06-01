@@ -13,6 +13,8 @@ import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
 import net.pl3x.bukkit.discord4bukkit.Logger;
 import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 
@@ -26,12 +28,19 @@ public class JDAListener extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent event) {
         Logger.debug("Discord: Connected");
-        TextChannel channel = event.getJDA().getTextChannelById(Config.CHANNEL);
+        TextChannel channel = event.getJDA().getTextChannelById(Config.CONSOLE_CHANNEL);
         if (channel != null) {
-            plugin.getBot().setChannel(channel);
+            plugin.getBot().setConsoleChannel(channel);
+        } else {
+            Logger.error("Could not register console channel!");
+        }
+
+        channel = event.getJDA().getTextChannelById(Config.CHAT_CHANNEL);
+        if (channel != null) {
+            plugin.getBot().setChatChannel(channel);
             plugin.getBot().sendMessageToDiscord(Lang.SERVER_ONLINE);
         } else {
-            Logger.error("Could not register channel!");
+            Logger.error("Could not register chat channel!");
         }
     }
 
@@ -60,8 +69,8 @@ public class JDAListener extends ListenerAdapter {
     }
 
     private void setChannel(JDA jda) {
-        TextChannel channel = jda != null ? jda.getTextChannelById(Config.CHANNEL) : null;
-        plugin.getBot().setChannel(channel);
+        TextChannel channel = jda != null ? jda.getTextChannelById(Config.CHAT_CHANNEL) : null;
+        plugin.getBot().setChatChannel(channel);
     }
 
     @Override
@@ -72,7 +81,7 @@ public class JDAListener extends ListenerAdapter {
         if (event.isWebhookMessage()) {
             return; // do not listen to webhooks
         }
-        if (event.getMessage().getChannel().getId().equals(Config.CHANNEL)) {
+        if (event.getMessage().getChannel().getId().equals(Config.CHAT_CHANNEL)) {
             String content = event.getMessage().getContentRaw();
             if (content.startsWith("!") && content.length() > 1) {
                 String[] split = content.split(" ");
@@ -84,6 +93,15 @@ public class JDAListener extends ListenerAdapter {
                         .replace("{displayname}", event.getMember().getEffectiveName())
                         .replace("{message}", event.getMessage().getContentDisplay()));
             }
+        } else if (event.getMessage().getChannel().getId().equals(Config.CONSOLE_CHANNEL)) {
+            if (event.getAuthor() == null || event.getAuthor().getId() == null || plugin.getBot().getClient().getSelfUser().getId() == null || event.getAuthor().getId().equals(plugin.getBot().getClient().getSelfUser().getId())) {
+                return;
+            }
+            new BukkitRunnable() {
+                public void run() {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), event.getMessage().getContentRaw());
+                }
+            }.runTask(plugin);
         }
     }
 }

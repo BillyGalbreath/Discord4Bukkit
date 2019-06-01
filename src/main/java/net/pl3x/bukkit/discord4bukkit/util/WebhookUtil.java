@@ -35,7 +35,7 @@ public class WebhookUtil {
         lastUsername = username;
 
         String hookName = webhooks[currentWebhook];
-        TextChannel channel = bot.getClient().getTextChannelById(Config.CHANNEL);
+        TextChannel channel = bot.getClient().getTextChannelById(Config.CHAT_CHANNEL);
         Webhook webhook = channel.getWebhooks().complete().stream()
                 .filter(hook -> hook.getName().equals(hookName))
                 .findFirst().orElse(null);

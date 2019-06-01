@@ -5,14 +5,15 @@ import net.pl3x.bukkit.discord4bukkit.command.bukkit.CmdDiscord4Bukkit;
 import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import net.pl3x.bukkit.discord4bukkit.listener.BukkitListener;
+import net.pl3x.bukkit.discord4bukkit.listener.ConsoleAppender;
 import net.pl3x.bukkit.discord4bukkit.util.JarLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
 public class D4BPlugin extends JavaPlugin {
-    private static final String JDAVersion = "3.8.2";
-    private static final String JDABuild = "459";
+    private static final String JDAVersion = "3.8.3";
+    private static final String JDABuild = "463";
 
     private static final String JDAUrl = "https://github.com/DV8FromTheWorld/JDA/releases/download/v" + JDAVersion + "/JDA-" + JDAVersion + "_" + JDABuild + "-withDependencies.jar";
     private static final String JDAFile = "jda-" + JDAVersion + "_" + JDABuild + ".jar";
@@ -41,6 +42,8 @@ public class D4BPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        new ConsoleAppender(this);
+
         getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
 
         getCommand("discord4bukkit").setExecutor(new CmdDiscord4Bukkit());

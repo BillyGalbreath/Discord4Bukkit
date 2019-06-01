@@ -8,7 +8,8 @@ public class Config {
     public static boolean DEBUG_MODE;
     public static String LANGUAGE_FILE;
     public static String BOT_TOKEN;
-    public static String CHANNEL;
+    public static String CHAT_CHANNEL;
+    public static String CONSOLE_CHANNEL;
 
     public static void reload() {
         Plugin plugin = D4BPlugin.getInstance();
@@ -19,6 +20,7 @@ public class Config {
         DEBUG_MODE = config.getBoolean("debug-mode", false);
         LANGUAGE_FILE = config.getString("language-file", "lang-en.yml");
         BOT_TOKEN = config.getString("bot-token", "");
-        CHANNEL = config.getString("channel", "000000000000000000");
+        CHAT_CHANNEL = config.getString("channel.chat", "000000000000000000");
+        CONSOLE_CHANNEL = config.getString("channel.console", "000000000000000000");
     }
 }
