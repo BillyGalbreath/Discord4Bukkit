@@ -15,6 +15,11 @@ public class Lang {
     public static String MINECRAFT_CHAT_FORMAT;
     public static String SERVER_ONLINE;
     public static String SERVER_OFFLINE;
+    public static String ADVANCEMENT_ICON_TASK;
+    public static String ADVANCEMENT_ICON_GOAL;
+    public static String ADVANCEMENT_ICON_CHALLENGE;
+    public static String ADVANCEMENT_FORMAT;
+
 
     public static void reload() {
         Plugin plugin = D4BPlugin.getInstance();
@@ -29,33 +34,52 @@ public class Lang {
         MINECRAFT_CHAT_FORMAT = config.getString("minecraft-chat-format", "<&7[&bD&7]&r {displayname}> {message}");
         SERVER_ONLINE = config.getString("server-online", ":<a:online:579218931495993354> **Server is online!**");
         SERVER_OFFLINE = config.getString("server-offline", "<a:offline:579218899493715971> **Server is offline!**");
+        ADVANCEMENT_ICON_TASK = config.getString("advancement.icon.task", ":medal:");
+        ADVANCEMENT_ICON_GOAL = config.getString("advancement.icon.goal", ":trophy:");
+        ADVANCEMENT_ICON_CHALLENGE = config.getString("advancement.icon.challenge", ":military_medal:");
+        ADVANCEMENT_FORMAT = config.getString("advancement.format", "{icon} {player} has completed the {type}, **[**{title}**]**!```{title}:\n  {description}```");
     }
 
+    /**
+     * Sends a message to a recipient
+     *
+     * @param recipient Recipient of message
+     * @param message   Message to send
+     */
     public static void send(CommandSender recipient, String message) {
-        if (message == null) {
-            return; // do not send blank messages
-        }
-        message = ChatColor.translateAlternateColorCodes('&', message);
-        if (ChatColor.stripColor(message).isEmpty()) {
-            return; // do not send blank messages
-        }
-
-        for (String part : message.split("\n")) {
-            recipient.sendMessage(part);
+        if (recipient != null) {
+            for (String part : colorize(message).split("\n")) {
+                recipient.sendMessage(part);
+            }
         }
     }
 
+    /**
+     * Broadcast a message to server
+     *
+     * @param message Message to broadcast
+     */
     public static void broadcast(String message) {
-        if (message == null) {
-            return; // do not send blank messages
-        }
-        message = ChatColor.translateAlternateColorCodes('&', message);
-        if (ChatColor.stripColor(message).isEmpty()) {
-            return; // do not send blank messages
-        }
-        for (String part : message.split("\n")) {
-            Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(part));
+        for (String part : colorize(message).split("\n")) {
+            Bukkit.getOnlinePlayers().forEach(recipient -> recipient.sendMessage(part));
             Bukkit.getConsoleSender().sendMessage(part);
         }
+    }
+
+    /**
+     * Colorize a String
+     *
+     * @param str String to colorize
+     * @return Colorized String
+     */
+    public static String colorize(String str) {
+        if (str == null) {
+            return "";
+        }
+        str = ChatColor.translateAlternateColorCodes('&', str);
+        if (ChatColor.stripColor(str).isEmpty()) {
+            return "";
+        }
+        return str;
     }
 }

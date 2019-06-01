@@ -1,11 +1,16 @@
 package net.pl3x.bukkit.discord4bukkit.listener;
 
 import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
+import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
+import org.bukkit.ChatColor;
+import org.bukkit.advancement.AdvancementDisplay;
+import org.bukkit.advancement.FrameType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -30,6 +35,44 @@ public class BukkitListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event) {
         plugin.getBot().sendMessageToDiscord(":skull: **" + event.getDeathMessage() + "**");
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onAdvancement(PlayerAdvancementDoneEvent event) {
+        AdvancementDisplay display = event.getAdvancement().getDisplay();
+
+        if (display == null) {
+            return; // nothing to display
+        }
+
+        if (!display.shouldAnnounceToChat()) {
+            return; // do not display
+        }
+
+        if (!event.getPlayer().getWorld().isGameRule("announceAdvancements")) {
+            return; // do not display
+        }
+
+        FrameType frame = display.getFrameType();
+        String icon;
+        switch (frame) {
+            case CHALLENGE:
+                icon = Lang.ADVANCEMENT_ICON_CHALLENGE;
+                break;
+            case GOAL:
+                icon = Lang.ADVANCEMENT_ICON_GOAL;
+                break;
+            case TASK:
+            default:
+                icon = Lang.ADVANCEMENT_ICON_TASK;
+        }
+
+        plugin.getBot().sendMessageToDiscord(ChatColor.stripColor(Lang.colorize(Lang.ADVANCEMENT_FORMAT
+                .replace("{icon}", icon)
+                .replace("{player}", event.getPlayer().getName())
+                .replace("{type}", frame.name().toLowerCase())
+                .replace("{title}", display.getTitle())
+                .replace("{description}", display.getDescription()))));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
