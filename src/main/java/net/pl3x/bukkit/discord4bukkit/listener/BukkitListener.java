@@ -1,5 +1,6 @@
 package net.pl3x.bukkit.discord4bukkit.listener;
 
+import com.vdurmont.emoji.EmojiParser;
 import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import org.bukkit.ChatColor;
@@ -77,14 +78,28 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
+        String message = EmojiParser.parseToUnicode(event.getMessage()
+                .replace(":)", ":smiley:")
+                .replace("(:", ":smiley:")
+                .replace(":P", ":stuck_out_tongue:")
+                .replace(":p", ":stuck_out_tongue:")
+                .replace(":(", ":frowning:")
+                .replace(":c", ":frowning:")
+                .replace(":C", ":frowning:")
+                .replace("D:", ":frowning:")
+                .replace(":D", ":smile:")
+                .replace("xD", ":smile:")
+                .replace("XD", ":smile:")
+                .replace(":'(", ":cry:")
+        );
         if (!event.isAsynchronous()) {
             new BukkitRunnable() {
                 public void run() {
-                    plugin.getBot().sendMessageToDiscord(event.getPlayer(), event.getMessage());
+                    plugin.getBot().sendMessageToDiscord(event.getPlayer(), message);
                 }
             }.runTaskAsynchronously(plugin);
         } else {
-            plugin.getBot().sendMessageToDiscord(event.getPlayer(), event.getMessage());
+            plugin.getBot().sendMessageToDiscord(event.getPlayer(), message);
         }
     }
 }

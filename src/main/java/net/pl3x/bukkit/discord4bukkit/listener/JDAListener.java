@@ -1,5 +1,6 @@
 package net.pl3x.bukkit.discord4bukkit.listener;
 
+import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.DisconnectEvent;
@@ -28,19 +29,25 @@ public class JDAListener extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent event) {
         Logger.debug("Discord: Connected");
-        TextChannel channel = event.getJDA().getTextChannelById(Config.CONSOLE_CHANNEL);
-        if (channel != null) {
-            plugin.getBot().setConsoleChannel(channel);
-        } else {
-            Logger.error("Could not register console channel!");
+
+        TextChannel channel;
+        if (Config.CONSOLE_CHANNEL != null && !Config.CONSOLE_CHANNEL.isEmpty()) {
+            channel = event.getJDA().getTextChannelById(Config.CONSOLE_CHANNEL);
+            if (channel != null) {
+                plugin.getBot().setConsoleChannel(channel);
+            } else {
+                Logger.error("Could not register console channel!");
+            }
         }
 
-        channel = event.getJDA().getTextChannelById(Config.CHAT_CHANNEL);
-        if (channel != null) {
-            plugin.getBot().setChatChannel(channel);
-            plugin.getBot().sendMessageToDiscord(Lang.SERVER_ONLINE);
-        } else {
-            Logger.error("Could not register chat channel!");
+        if (Config.CHAT_CHANNEL != null && !Config.CHAT_CHANNEL.isEmpty()) {
+            channel = event.getJDA().getTextChannelById(Config.CHAT_CHANNEL);
+            if (channel != null) {
+                plugin.getBot().setChatChannel(channel);
+                plugin.getBot().sendMessageToDiscord(Lang.SERVER_ONLINE);
+            } else {
+                Logger.error("Could not register chat channel!");
+            }
         }
     }
 
@@ -91,7 +98,7 @@ public class JDAListener extends ListenerAdapter {
             } else {
                 plugin.getBot().sendMessageToMinecraft(Lang.MINECRAFT_CHAT_FORMAT
                         .replace("{displayname}", event.getMember().getEffectiveName())
-                        .replace("{message}", event.getMessage().getContentDisplay()));
+                        .replace("{message}", EmojiParser.parseToAliases(event.getMessage().getContentDisplay())));
             }
         } else if (event.getMessage().getChannel().getId().equals(Config.CONSOLE_CHANNEL)) {
             if (event.getAuthor() == null || event.getAuthor().getId() == null || plugin.getBot().getClient().getSelfUser().getId() == null || event.getAuthor().getId().equals(plugin.getBot().getClient().getSelfUser().getId())) {
