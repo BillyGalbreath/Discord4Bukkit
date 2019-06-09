@@ -34,7 +34,7 @@ public class ConsoleAppender extends AbstractAppender {
     private final D4BPlugin plugin;
 
     public ConsoleAppender(D4BPlugin plugin) {
-        super("D4B-ConsoleChannel", null, PATTERN_LAYOUT, false);
+        super("D4B", null, PATTERN_LAYOUT, false);
         this.plugin = plugin;
 
         ((Logger) LogManager.getRootLogger()).addAppender(this);

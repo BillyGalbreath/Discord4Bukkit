@@ -11,7 +11,7 @@ public class ConsoleMessageQueueWorker extends Thread {
     public final Queue<String> QUEUE = new LinkedList<>();
 
     public ConsoleMessageQueueWorker() {
-        super("DiscordSRV - Console Message Queue Worker");
+        super("D4B");
     }
 
     @Override
