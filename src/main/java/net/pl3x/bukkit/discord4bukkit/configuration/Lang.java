@@ -49,7 +49,9 @@ public class Lang {
     public static void send(CommandSender recipient, String message) {
         if (recipient != null) {
             for (String part : colorize(message).split("\n")) {
-                recipient.sendMessage(part);
+                if (part != null && !part.isEmpty()) {
+                    recipient.sendMessage(part);
+                }
             }
         }
     }
@@ -61,8 +63,10 @@ public class Lang {
      */
     public static void broadcast(String message) {
         for (String part : colorize(message).split("\n")) {
-            Bukkit.getOnlinePlayers().forEach(recipient -> recipient.sendMessage(part));
-            Bukkit.getConsoleSender().sendMessage(part);
+            if (part != null && !part.isEmpty()) {
+                Bukkit.getOnlinePlayers().forEach(recipient -> recipient.sendMessage(part));
+                Bukkit.getConsoleSender().sendMessage(part);
+            }
         }
     }
 
