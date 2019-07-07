@@ -25,10 +25,14 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
+        String msg = event.getJoinMessage();
+        if (msg == null || msg.isEmpty()) {
+            return;
+        }
         if (event.getPlayer().hasPlayedBefore()) {
-            plugin.getBot().sendMessageToDiscord(":heavy_plus_sign: **" + event.getJoinMessage() + "**");
+            plugin.getBot().sendMessageToDiscord(":heavy_plus_sign: **" + msg + "**");
         } else {
-            plugin.getBot().sendMessageToDiscord(":heavy_plus_sign: :tada: **" + event.getJoinMessage() + "**");
+            plugin.getBot().sendMessageToDiscord(":heavy_plus_sign: :tada: **" + msg + "**");
         }
     }
 
