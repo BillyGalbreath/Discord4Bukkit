@@ -8,6 +8,7 @@ api-version: "1.13"
 commands:
   discord4bukkit:
     description: Controls the discord bot
+    permission: command.discord4bukkit
     usage: /<command> (reload)
     aliases:
       - discord
