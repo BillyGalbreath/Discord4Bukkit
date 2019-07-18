@@ -11,7 +11,7 @@ commands:
     permission: command.discord4bukkit
     usage: /<command> (reload)
     aliases:
-      - discord
+      - discordbot
       - d4b
 
 permissions:
