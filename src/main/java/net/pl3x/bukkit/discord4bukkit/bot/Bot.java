@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 
 import javax.security.auth.login.LoginException;
 import java.util.Collection;
@@ -144,7 +145,8 @@ public class Bot {
     public void handleCommand(String sender, String command, String[] args) {
         // TODO this is just a quick and stupid impl to get going
         if (command.equals("list") || command.equals("playerlist")) {
-            Collection<? extends Player> online = Bukkit.getOnlinePlayers();
+            Collection<? extends Player> online = Bukkit.getOnlinePlayers().stream()
+                    .filter(player -> !isVanished(player)).collect(Collectors.toList());
             sendMessageToDiscord(String.format("**Players Online:** (%s out of %s) \n%s",
                     online.size(),
                     Bukkit.getMaxPlayers(),
@@ -160,5 +162,12 @@ public class Bot {
                     + String.format("%.2f", tps[1]) + " "
                     + String.format("%.2f", tps[2]));
         }
+    }
+
+    private boolean isVanished(Player player) {
+        for (MetadataValue meta : player.getMetadata("vanished")) {
+            if (meta.asBoolean()) return true;
+        }
+        return false;
     }
 }
