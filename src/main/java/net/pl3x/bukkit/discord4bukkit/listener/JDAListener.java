@@ -2,6 +2,7 @@ package net.pl3x.bukkit.discord4bukkit.listener;
 
 import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.DisconnectEvent;
 import net.dv8tion.jda.core.events.ReadyEvent;
@@ -18,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class JDAListener extends ListenerAdapter {
     private final D4BPlugin plugin;
@@ -96,9 +98,17 @@ public class JDAListener extends ListenerAdapter {
                 String[] args = Arrays.copyOfRange(split, 1, split.length);
                 plugin.getBot().handleCommand(event.getAuthor().getName(), command, args);
             } else {
+                StringBuilder message = new StringBuilder(EmojiParser.parseToAliases(event.getMessage().getContentDisplay()));
+                List<Message.Attachment> att = event.getMessage().getAttachments();
+                for (Message.Attachment attachment : att.subList(0, att.size() > 3 ? 3 : att.size())) {
+                    if (message.length() > 0) {
+                        message.append(" ");
+                    }
+                    message.append(attachment.getUrl());
+                }
                 plugin.getBot().sendMessageToMinecraft(Lang.MINECRAFT_CHAT_FORMAT
                         .replace("{displayname}", event.getMember().getEffectiveName())
-                        .replace("{message}", EmojiParser.parseToAliases(event.getMessage().getContentDisplay())));
+                        .replace("{message}", message.toString()));
             }
         } else if (event.getMessage().getChannel().getId().equals(Config.CONSOLE_CHANNEL)) {
             if (event.getAuthor() == null || event.getAuthor().getId() == null || plugin.getBot().getClient().getSelfUser().getId() == null || event.getAuthor().getId().equals(plugin.getBot().getClient().getSelfUser().getId())) {
