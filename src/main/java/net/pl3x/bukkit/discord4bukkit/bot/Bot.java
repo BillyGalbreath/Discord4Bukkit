@@ -9,6 +9,7 @@ import net.pl3x.bukkit.discord4bukkit.Logger;
 import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import net.pl3x.bukkit.discord4bukkit.listener.JDAListener;
+import net.pl3x.bukkit.discord4bukkit.task.ConsoleMessageQueueWorker;
 import net.pl3x.bukkit.discord4bukkit.util.WebhookUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -51,6 +52,7 @@ public class Bot {
     }
 
     public void disconnect() {
+        ConsoleMessageQueueWorker.QUEUE.clear();
         if (client != null) {
             plugin.getBot().sendMessageToDiscord(Lang.SERVER_OFFLINE, true);
             chatChannel = null;

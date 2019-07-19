@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class ConsoleMessageQueueWorker extends Thread {
-    public final Queue<String> QUEUE = new LinkedList<>();
+    public static final Queue<String> QUEUE = new LinkedList<>();
 
     public ConsoleMessageQueueWorker() {
         super("D4B");

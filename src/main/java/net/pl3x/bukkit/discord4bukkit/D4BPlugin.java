@@ -22,6 +22,8 @@ public class D4BPlugin extends JavaPlugin {
 
     private final Bot bot;
 
+    private ConsoleAppender consoleAppender;
+
     public D4BPlugin() {
         super();
         instance = this;
@@ -42,7 +44,7 @@ public class D4BPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        new ConsoleAppender(this);
+        consoleAppender = new ConsoleAppender(this);
 
         getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
 
@@ -53,6 +55,8 @@ public class D4BPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        consoleAppender.worker.interrupt();
+
         bot.disconnect();
     }
 

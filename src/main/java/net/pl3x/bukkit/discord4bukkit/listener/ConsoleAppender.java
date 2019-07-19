@@ -24,7 +24,7 @@ public class ConsoleAppender extends AbstractAppender {
     private static Date date = new Date();
     private static SimpleDateFormat format = new SimpleDateFormat("HH:mm");
 
-    private final ConsoleMessageQueueWorker worker = new ConsoleMessageQueueWorker();
+    public final ConsoleMessageQueueWorker worker = new ConsoleMessageQueueWorker();
 
     public static String timeStamp() {
         date.setTime(System.currentTimeMillis());
