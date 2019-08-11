@@ -3,6 +3,7 @@ package net.pl3x.bukkit.discord4bukkit.listener;
 import com.vdurmont.emoji.EmojiParser;
 import net.pl3x.bukkit.discord4bukkit.D4BPlugin;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
+import net.pl3x.purpur.event.PlayerAFKEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.advancement.AdvancementDisplay;
 import org.bukkit.advancement.FrameType;
@@ -14,6 +15,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.BroadcastMessageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BukkitListener implements Listener {
@@ -47,7 +49,11 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event) {
-        plugin.getBot().sendMessageToDiscord(":skull: **" + event.getDeathMessage() + "**");
+        String msg = event.getDeathMessage();
+        if (msg == null || msg.isEmpty() || msg.equalsIgnoreCase("null")) {
+            return;
+        }
+        plugin.getBot().sendMessageToDiscord(":skull: **" + msg + "**");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -113,5 +119,25 @@ public class BukkitListener implements Listener {
         } else {
             plugin.getBot().sendMessageToDiscord(event.getPlayer(), message);
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onAFK(PlayerAFKEvent event) {
+        String msg = event.getBroadcastMsg();
+        if (msg == null || msg.isEmpty() || msg.equalsIgnoreCase("null")) {
+            return;
+        }
+        Lang.broadcast(msg);
+        event.setBroadcastMsg(null);
+        plugin.getBot().sendMessageToDiscord((event.isGoingAfk() ? ":sleeping:" : ":grinning:") + " **" + msg + "**");
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBroadcast(BroadcastMessageEvent event) {
+        String msg = event.getMessage();
+        if (msg == null || msg.isEmpty() || msg.equalsIgnoreCase("null")) {
+            return;
+        }
+        plugin.getBot().sendMessageToDiscord(":warning: **" + msg + "**");
     }
 }
