@@ -26,7 +26,7 @@ public class BukkitListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         String msg = event.getJoinMessage();
-        if (msg == null || msg.isEmpty()) {
+        if (msg == null || msg.isEmpty() || msg.equalsIgnoreCase("null")) {
             return;
         }
         if (event.getPlayer().hasPlayedBefore()) {
@@ -38,7 +38,11 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        plugin.getBot().sendMessageToDiscord(":heavy_minus_sign: **" + event.getQuitMessage() + "**");
+        String msg = event.getQuitMessage();
+        if (msg == null || msg.isEmpty() || msg.equalsIgnoreCase("null")) {
+            return;
+        }
+        plugin.getBot().sendMessageToDiscord(":heavy_minus_sign: **" + msg + "**");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
