@@ -153,7 +153,7 @@ public class Bot {
                     online.size(),
                     Bukkit.getMaxPlayers(),
                     online.stream()
-                            .map(HumanEntity::getName)
+                            .map(player -> (player.isAfk() ? "[AFK] " : "") + player.getName())
                             .collect(Collectors.joining(", "))));
             return;
         }
