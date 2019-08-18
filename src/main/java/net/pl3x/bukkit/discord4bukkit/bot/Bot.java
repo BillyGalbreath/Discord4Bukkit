@@ -19,6 +19,8 @@ import org.bukkit.metadata.MetadataValue;
 
 import javax.security.auth.login.LoginException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Bot {
@@ -147,8 +149,10 @@ public class Bot {
     public void handleCommand(String sender, String command, String[] args) {
         // TODO this is just a quick and stupid impl to get going
         if (command.equals("list") || command.equals("playerlist")) {
-            Collection<? extends Player> online = Bukkit.getOnlinePlayers().stream()
-                    .filter(player -> !isVanished(player)).collect(Collectors.toList());
+            List<Player> online = Bukkit.getOnlinePlayers().stream()
+                    .filter(player -> !isVanished(player))
+                    .sorted()
+                    .collect(Collectors.toList());
             sendMessageToDiscord(String.format("**Players Online:** (%s out of %s) \n%s",
                     online.size(),
                     Bukkit.getMaxPlayers(),
