@@ -13,13 +13,10 @@ import net.pl3x.bukkit.discord4bukkit.task.ConsoleMessageQueueWorker;
 import net.pl3x.bukkit.discord4bukkit.util.WebhookUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
 import javax.security.auth.login.LoginException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,7 +148,7 @@ public class Bot {
         if (command.equals("list") || command.equals("playerlist")) {
             List<Player> online = Bukkit.getOnlinePlayers().stream()
                     .filter(player -> !isVanished(player))
-                    .sorted()
+                    .sorted((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()))
                     .collect(Collectors.toList());
             sendMessageToDiscord(String.format("**Players Online:** (%s out of %s) \n%s",
                     online.size(),
