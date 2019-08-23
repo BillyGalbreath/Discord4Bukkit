@@ -77,8 +77,13 @@ public class WebhookUtil {
         msgBuilder.stripMentions(jda, Message.MentionType.HERE); // just as bad
         msgBuilder.stripMentions(jda, Message.MentionType.ROLE); // annoying :S
 
+        String content = msgBuilder.build().getContentRaw();
+        if (content == null || content.isEmpty()) {
+            return; // dont send empty messages
+        }
+
         WebhookMessageBuilder webhookBuilder = new WebhookMessageBuilder();
-        webhookBuilder.setContent(msgBuilder.build().getContentRaw());
+        webhookBuilder.setContent(content);
         webhookBuilder.setUsername(username);
         webhookBuilder.setAvatarUrl(avatar);
 
