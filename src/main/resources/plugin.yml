@@ -4,6 +4,8 @@ version: "${project.version}"
 description: "Discord Bot for Bukkit Servers"
 author: "BillyGalbreath"
 api-version: "1.13"
+softdepend:
+  - SuperVanish
 
 commands:
   discord4bukkit:

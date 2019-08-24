@@ -6,6 +6,7 @@ import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import net.pl3x.bukkit.discord4bukkit.listener.BukkitListener;
 import net.pl3x.bukkit.discord4bukkit.listener.ConsoleAppender;
+import net.pl3x.bukkit.discord4bukkit.listener.SuperVanishListener;
 import net.pl3x.bukkit.discord4bukkit.util.JarLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -47,6 +48,10 @@ public class D4BPlugin extends JavaPlugin {
         consoleAppender = new ConsoleAppender(this);
 
         getServer().getPluginManager().registerEvents(new BukkitListener(this), this);
+
+        if (getServer().getPluginManager().isPluginEnabled("SuperVanish")) {
+            getServer().getPluginManager().registerEvents(new SuperVanishListener(this), this);
+        }
 
         getCommand("discord4bukkit").setExecutor(new CmdDiscord4Bukkit());
 
