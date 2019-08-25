@@ -64,8 +64,7 @@ public class Lang {
     public static void broadcast(String message) {
         for (String part : colorize(message).split("\n")) {
             if (part != null && !part.isEmpty()) {
-                Bukkit.getOnlinePlayers().forEach(recipient -> recipient.sendMessage(part));
-                Bukkit.getConsoleSender().sendMessage(part);
+                Bukkit.broadcastMessage(part);
             }
         }
     }
