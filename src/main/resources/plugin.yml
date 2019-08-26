@@ -11,7 +11,7 @@ commands:
   discord4bukkit:
     description: Controls the discord bot
     permission: command.discord4bukkit
-    usage: /<command> (reload)
+    usage: /<command> (reload | start | stop | broadcast [msg])
     aliases:
       - discordbot
       - d4b
