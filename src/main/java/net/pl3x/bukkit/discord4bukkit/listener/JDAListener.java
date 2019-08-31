@@ -16,6 +16,7 @@ import net.pl3x.bukkit.discord4bukkit.Logger;
 import net.pl3x.bukkit.discord4bukkit.configuration.Config;
 import net.pl3x.bukkit.discord4bukkit.configuration.Lang;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
@@ -108,7 +109,7 @@ public class JDAListener extends ListenerAdapter {
                 }
                 plugin.getBot().sendMessageToMinecraft(Lang.MINECRAFT_CHAT_FORMAT
                         .replace("{displayname}", event.getMember().getEffectiveName())
-                        .replace("{message}", message.toString()));
+                        .replace("{message}", ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', message.toString()))));
             }
         } else if (event.getMessage().getChannel().getId().equals(Config.CONSOLE_CHANNEL)) {
             if (event.getAuthor() == null || event.getAuthor().getId() == null || plugin.getBot().getClient().getSelfUser().getId() == null || event.getAuthor().getId().equals(plugin.getBot().getClient().getSelfUser().getId())) {
