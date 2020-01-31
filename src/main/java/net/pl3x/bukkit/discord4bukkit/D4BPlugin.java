@@ -14,7 +14,7 @@ import java.io.File;
 
 public class D4BPlugin extends JavaPlugin {
     private static final String JDAVersion = "3.8.3";
-    private static final String JDABuild = "463";
+    private static final String JDABuild = "464";
 
     private static final String JDAUrl = "https://github.com/DV8FromTheWorld/JDA/releases/download/v" + JDAVersion + "/JDA-" + JDAVersion + "_" + JDABuild + "-withDependencies.jar";
     private static final String JDAFile = "jda-" + JDAVersion + "_" + JDABuild + ".jar";
