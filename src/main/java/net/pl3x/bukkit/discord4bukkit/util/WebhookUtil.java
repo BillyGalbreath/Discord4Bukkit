@@ -25,7 +25,7 @@ public class WebhookUtil {
     private static String lastUsername;
 
     public static void sendMessageToDiscord(Bot bot, Player player, String message) {
-        sendMessageToDiscord(bot, "https://minotar.net/helm/" + player.getName() + "/100.png", player.getDisplayName(), message);
+        sendMessageToDiscord(bot, "https://minotar.net/helm/" + player.getName() + "/100.png", ChatColor.stripColor(player.getDisplayName()), message);
     }
 
     public static void sendMessageToDiscord(Bot bot, String avatar, String username, String message) {
