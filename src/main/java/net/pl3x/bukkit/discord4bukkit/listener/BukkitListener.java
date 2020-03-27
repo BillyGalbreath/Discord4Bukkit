@@ -127,7 +127,7 @@ public class BukkitListener implements Listener {
         if (msg == null || msg.isEmpty() || msg.equalsIgnoreCase("null")) {
             return;
         }
-        msg = msg.replace("{player}", event.getPlayer().getName());
+        msg = String.format(msg, event.getPlayer().getName());
         Lang.broadcast(msg);
         event.setBroadcastMsg(null);
         plugin.getBot().sendMessageToDiscord((event.isGoingAfk() ? ":sleeping:" : ":grinning:") + " **" + msg + "**");
